@@ -1,2 +1,2 @@
 # marketdata
-Data Dump
+Market Related Calculations for Personal Trading/Investing Purposes
