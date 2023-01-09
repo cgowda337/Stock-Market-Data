@@ -9,28 +9,20 @@ from matplotlib import pyplot as plt
 import statistics
 import math
 
-#download data for open & close
-fut_list = ['SPY','TLT']
-data= yf.download(fut_list, start="2017-01-01", end="2023-01-10")[['Open','Adj Close']]
-df = pd.DataFrame(data=data)
-
-#calculate 20d standard dev
-diff = df['Open']-df['Adj Close']
-daily_returns = diff['SPY']+diff['TLT']
-daily_df = pd.DataFrame(data=daily_returns)
-rpar = np.log(np.absolute(daily_df.tail(20).pct_change(1)))
-x = math.exp(rpar.std()*240**0.5)
+#target volatility
+target_vol = 0.125
 
 #download data for close
-fut_list = ['SPY','TLT']
-data2= yf.download(fut_list, start="2017-01-01", end="2023-01-10")['Adj Close']
-df2 = pd.DataFrame(data=data2['SPY']+data2['TLT'])
+fut_list = ['SPY','IEF']
+data2= yf.download(fut_list, start="2009-01-01", end="2023-01-10")['Adj Close']
+df2 = pd.DataFrame(data=(data2['SPY']*0.6)+(data2['IEF']*0.4))
 
-#volatility calculation
-log = np.log(df2/df2.shift())
-vol = log.rolling(20).std()*252**.5
-volatility = pd.DataFrame(data = vol)
+#20 day annualized volatility calculation
+vol = pd.DataFrame(data=(((df2.pct_change(1).rolling(20)).std()))*(252**0.5))
+vol
 
-#plot system leverage
-leverage = (x/volatility)
-leverage.plot()
+leverage = target_vol/vol
+np.clip(leverage, 0, 2).plot(legend=None)
+plt.title('Leverage(12.5% Vol Target)')
+plt.xlabel('Date')
+plt.ylabel('Leverage')
