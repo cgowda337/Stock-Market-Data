@@ -1,2 +1,2 @@
 # marketdata
-Market Related Calculations for Personal Trading/Investing Purposes
+Market Related Calculations/Models/Visualizations for Personal Trading/Investing Purposes
